@@ -60,7 +60,13 @@ static inline __m256 gather_channel(const float* base_ptr, __m256i idx_vec) {
 }
 
 static inline void scatter_channel(float* base_ptr, __m256i idx_vec, __m256 vals) {
-    _mm256_i32scatter_ps(base_ptr, idx_vec, vals, 1);
+    alignas(32) int idx[8];
+    alignas(32) float val[8];
+    _mm256_store_si256((__m256i*)idx, idx_vec);
+    _mm256_store_ps(val, vals);
+    for (int k = 0; k < 8; ++k) {
+        *(float*)((char*)base_ptr + idx[k]) = val[k];
+    }
 }
 
 static inline __m256i make_offset_vec(int y, int x, int c, int M) {
@@ -72,10 +78,9 @@ static inline __m256i make_offset_vec(int y, int x, int c, int M) {
 }
 
 // FIX 1: Mask reversal fixed here
-static inline __m256i load_mask(const unsigned char* mask_base, int y, int x, int M) {
+static inline __m256i load_mask(const int* mask_base, int y, int x, int M) {
     int base = y * M + x;
-    __m128i mask8 = _mm_loadl_epi64((__m128i const*)(mask_base + base));
-    __m256i mask32 = _mm256_cvtepu8_epi32(mask8);
+    __m256i mask32 = _mm256_loadu_si256((__m256i const*)(mask_base + base));
     // Use _mm256_cmpgt_epi32 to check if mask > 0 (Active pixel)
     return _mm256_cmpgt_epi32(mask32, _mm256_setzero_si256());
 }
