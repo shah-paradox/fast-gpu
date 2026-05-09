@@ -4,7 +4,9 @@
 #include <cstring>
 #include <algorithm>
 #include <cstdlib>
+#ifdef LIKWID_PERFMON
 #include <likwid-marker.h>
+#endif
 
 #include "solver.h"
 
@@ -73,6 +75,7 @@ void OpenMPSolverV4::calc_error() {
 }
 
 std::tuple<py::array_t<unsigned char>, py::array_t<float>> OpenMPSolverV4::step(int iteration) {
+  #ifdef LIKWID_PERFMON
   #pragma omp parallel
   {
       if (!likwid_v4_initialized) {
@@ -82,6 +85,7 @@ std::tuple<py::array_t<unsigned char>, py::array_t<float>> OpenMPSolverV4::step(
   }
 
   LIKWID_MARKER_START("v4_compute");
+  #endif
 
   double r_sq_r = 0, r_sq_g = 0, r_sq_b = 0;
 
@@ -198,7 +202,9 @@ std::tuple<py::array_t<unsigned char>, py::array_t<float>> OpenMPSolverV4::step(
       }
   }
   
+  #ifdef LIKWID_PERFMON
   LIKWID_MARKER_STOP("v4_compute");
+  #endif
 
   calc_error();
 

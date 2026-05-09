@@ -3,7 +3,9 @@
 #include <cmath>
 #include <cstring>
 #include <algorithm>
+#ifdef LIKWID_PERFMON
 #include <likwid-marker.h>
+#endif
 
 #include "solver.h"
 
@@ -57,10 +59,12 @@ inline void OpenMPMultigridSolver::smooth(int n_rows, int n_cols, float* t, cons
         #pragma omp parallel for schedule(static)
         for (int y = 1; y < n_rows - 1; ++y) {
             
+            #ifdef LIKWID_PERFMON
             if (!likwid_multigrid_v2_initialized) {
                 LIKWID_MARKER_THREADINIT;
                 likwid_multigrid_v2_initialized = true;
             }
+            #endif
 
             // Pre-compute row offsets to save ALU instructions
             int m_off = y * n_cols;
@@ -201,6 +205,7 @@ void OpenMPMultigridSolver::calc_error() {
 
 std::tuple<py::array_t<unsigned char>, py::array_t<float>> OpenMPMultigridSolver::step(int iteration) {
 
+  #ifdef LIKWID_PERFMON
   #pragma omp parallel
   {
       if (!likwid_multigrid_v2_initialized) {
@@ -210,6 +215,7 @@ std::tuple<py::array_t<unsigned char>, py::array_t<float>> OpenMPMultigridSolver
   }
 
   LIKWID_MARKER_START("multigrid_vcycle");
+  #endif
   // V-Cycle Driver
   for (int it = 0; it < iteration; ++it) {
 
@@ -231,7 +237,9 @@ std::tuple<py::array_t<unsigned char>, py::array_t<float>> OpenMPMultigridSolver
     // 5. Post-smoothing (Fine grid)
     smooth(N, M, tgt, grad, mask, m3);
   }
+  #ifdef LIKWID_PERFMON
   LIKWID_MARKER_STOP("multigrid_vcycle");
+  #endif
 
   // Calculate convergence error
   calc_error();

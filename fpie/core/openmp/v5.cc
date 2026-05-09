@@ -4,7 +4,9 @@
 #include <cstring>
 #include <algorithm>
 #include <cstdlib>
+#ifdef LIKWID_PERFMON
 #include <likwid-marker.h>
+#endif
 
 // AVX2 intrinsics
 #ifdef __AVX2__
@@ -114,6 +116,7 @@ void OpenMPSolverV5::calc_error() {
 }
 
 std::tuple<py::array_t<unsigned char>, py::array_t<float>> OpenMPSolverV5::step(int max_iterations) {
+  #ifdef LIKWID_PERFMON
   #pragma omp parallel
   {
       if (!likwid_v5_initialized) {
@@ -123,6 +126,7 @@ std::tuple<py::array_t<unsigned char>, py::array_t<float>> OpenMPSolverV5::step(
   }
 
   LIKWID_MARKER_START("v5_compute");
+  #endif
 
   double r_sq_r = 0, r_sq_g = 0, r_sq_b = 0;
 
@@ -480,7 +484,9 @@ std::tuple<py::array_t<unsigned char>, py::array_t<float>> OpenMPSolverV5::step(
       it++;
   } 
 
+  #ifdef LIKWID_PERFMON
   LIKWID_MARKER_STOP("v5_compute");
+  #endif
 
   calc_error();
 

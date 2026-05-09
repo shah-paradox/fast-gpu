@@ -3,7 +3,9 @@
 #include <tuple>
 
 #include "solver.h"
+#ifdef LIKWID_PERFMON
 #include <likwid-marker.h>
+#endif
 
 OpenMPGridSolver::OpenMPGridSolver(int grid_x, int grid_y, int n_cpu)
     : imgbuf(NULL), tmp(NULL), GridSolver(grid_x, grid_y) {
@@ -80,8 +82,10 @@ OpenMPGridSolver::step(int iteration) {
 
 #pragma omp parallel
   {
+    #ifdef LIKWID_PERFMON
     LIKWID_MARKER_THREADINIT;
     LIKWID_MARKER_START("grid");
+    #endif
     for (int i = 0; i < iteration; ++i) {
 #pragma omp for schedule(static)
       for (int block_id = 0; block_id < block_x * block_y; ++block_id) {
@@ -106,7 +110,9 @@ OpenMPGridSolver::step(int iteration) {
         }
       }
     }
+    #ifdef LIKWID_PERFMON
     LIKWID_MARKER_STOP("grid");
+    #endif
   }
 
   calc_error();

@@ -3,7 +3,9 @@
 #include <tuple>
 
 #include "solver.h"
+#ifdef LIKWID_PERFMON
 #include <likwid-marker.h>
+#endif
 
 OpenMPEquSolver::OpenMPEquSolver(int n_cpu)
     : maskbuf(NULL), imgbuf(NULL), tmp(NULL), n_mid(0), EquSolver() {
@@ -109,8 +111,10 @@ std::tuple<py::array_t<unsigned char>, py::array_t<float>>
 OpenMPEquSolver::step(int iteration) {
 #pragma omp parallel
   {
+    #ifdef LIKWID_PERFMON
     LIKWID_MARKER_THREADINIT;
     LIKWID_MARKER_START("equ");
+    #endif
     for (int i = 0; i < iteration; ++i) {
 #pragma omp for schedule(static)
       for (int j = 1; j < n_mid; ++j) {
@@ -121,7 +125,9 @@ OpenMPEquSolver::step(int iteration) {
         update_equation(j);
       }
     }
+    #ifdef LIKWID_PERFMON
     LIKWID_MARKER_STOP("equ");
+    #endif
   }
 
   calc_error();
