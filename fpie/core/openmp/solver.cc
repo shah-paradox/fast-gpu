@@ -1,31 +1,10 @@
 #include "solver.h"
-#ifdef LIKWID_PERFMON
-#include <likwid-marker.h>
-#endif
 #include <stdlib.h>
-
-static bool likwid_init_done = false;
 
 PYBIND11_MODULE(core_openmp, m) {
   m.def("likwid_init", []() {
-#ifdef LIKWID_PERFMON
-    if (!likwid_init_done) {
-      LIKWID_MARKER_INIT;
-      likwid_init_done = true;
-    }
-#endif
   });
   m.def("likwid_close", []() {
-#ifdef LIKWID_PERFMON
-    if (likwid_init_done) {
-      const char* filepath = getenv("LIKWID_FILEPATH");
-      if (filepath) {
-        LIKWID_MARKER_WRITE_FILE(filepath);
-      }
-      LIKWID_MARKER_CLOSE;
-      likwid_init_done = false;
-    }
-#endif
   });
 
   py::class_<OpenMPEquSolver>(m, "EquSolver")

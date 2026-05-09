@@ -13,8 +13,6 @@ os.environ["OMP_NUM_THREADS"] = "8"
 
 
 def main():
-    # Initialize LIKWID marker API (must be before any markers)
-    core_openmp.likwid_init()
 
     # 1. Load images
     print("Loading images...")
@@ -65,9 +63,6 @@ def main():
     # 5. Save the result
     write_image("result_v5.jpg", result)
     print("Saved result to result_v5.jpg")
-
-    # Flush LIKWID marker data (must be before exit)
-    core_openmp.likwid_close()
 
 
 if __name__ == "__main__":
