@@ -1,0 +1,121 @@
+CPU:
+1. benchmark_openmp.py : the original baseline, Standard OpenMP Parallel Jacobi/Red-Black iteration.
+
+Implementation:
+
+Image test0 : The Dot , 65K pixels , hypothesis: CPU works better than GPU
+
+Threads = 1
+
+Solved in 3.0718 seconds
+Saved result to result2.jpg
+--------------------------------------------------------------------------------
+Group 1: L3CACHE
++--------------------------+---------+-------------+
+|           Event          | Counter |  HWThread 0 |
++--------------------------+---------+-------------+
+|     INSTR_RETIRED_ANY    |  FIXC0  | 19417996710 |
+|   CPU_CLK_UNHALTED_CORE  |  FIXC1  |  8439388546 |
+|   CPU_CLK_UNHALTED_REF   |  FIXC2  |  5970723620 |
+|  MEM_LOAD_RETIRED_L3_HIT |   PMC0  |     6633076 |
+| MEM_LOAD_RETIRED_L3_MISS |   PMC1  |     1531005 |
+|     UOPS_RETIRED_ALL     |   PMC2  | 22899195423 |
++--------------------------+---------+-------------+
+
++----------------------+------------+
+|        Metric        | HWThread 0 |
++----------------------+------------+
+|  Runtime (RDTSC) [s] |     3.3531 |
+| Runtime unhalted [s] |     4.4418 |
+|      Clock [MHz]     |  2685.5770 |
+|          CPI         |     0.4346 |
+|    L3 request rate   |     0.0004 |
+|     L3 miss rate     |     0.0001 |
+|     L3 miss ratio    |     0.1875 |
++----------------------+------------+
+
+Solved in 2.7349 seconds
+Saved result to result2.jpg
+--------------------------------------------------------------------------------
+Group 1: L2CACHE
++-----------------------+---------+-------------+
+|         Event         | Counter |  HWThread 0 |
++-----------------------+---------+-------------+
+|   INSTR_RETIRED_ANY   |  FIXC0  | 19417590300 |
+| CPU_CLK_UNHALTED_CORE |  FIXC1  |  8313900381 |
+|  CPU_CLK_UNHALTED_REF |  FIXC2  |  5369845433 |
+| L2_TRANS_ALL_REQUESTS |   PMC0  |  1413254844 |
+|     L2_RQSTS_MISS     |   PMC1  |   403220841 |
++-----------------------+---------+-------------+
+
++----------------------+------------+
+|        Metric        | HWThread 0 |
++----------------------+------------+
+|  Runtime (RDTSC) [s] |     3.0091 |
+| Runtime unhalted [s] |     4.3757 |
+|      Clock [MHz]     |  2941.6882 |
+|          CPI         |     0.4282 |
+|    L2 request rate   |     0.0728 |
+|     L2 miss rate     |     0.0208 |
+|     L2 miss ratio    |     0.2853 |
++----------------------+------------+
+
+
+Solved in 2.5722 seconds
+Saved result to result2.jpg
+--------------------------------------------------------------------------------
+Group 1: MEM
++-----------------------+---------+-------------+
+|         Event         | Counter |  HWThread 0 |
++-----------------------+---------+-------------+
+|   INSTR_RETIRED_ANY   |  FIXC0  | 19417486658 |
+| CPU_CLK_UNHALTED_CORE |  FIXC1  |  7862537206 |
+|  CPU_CLK_UNHALTED_REF |  FIXC2  |  5105873806 |
+|       DRAM_READS      | MBOX0C1 |   176945532 |
+|      DRAM_WRITES      | MBOX0C2 |    80946525 |
++-----------------------+---------+-------------+
+
++-----------------------------------+------------+
+|               Metric              | HWThread 0 |
++-----------------------------------+------------+
+|        Runtime (RDTSC) [s]        |     2.8380 |
+|        Runtime unhalted [s]       |     4.1382 |
+|            Clock [MHz]            |  2925.8108 |
+|                CPI                |     0.4049 |
+|  Memory load bandwidth [MBytes/s] |  3990.3678 |
+|  Memory load data volume [GBytes] |    11.3245 |
+| Memory evict bandwidth [MBytes/s] |  1825.4567 |
+| Memory evict data volume [GBytes] |     5.1806 |
+|    Memory bandwidth [MBytes/s]    |  5815.8245 |
+|    Memory data volume [GBytes]    |    16.5051 |
++-----------------------------------+------------+
+
+Solved in 2.5249 seconds
+Saved result to result2.jpg
+--------------------------------------------------------------------------------
+Group 1: FLOPS_SP
++------------------------------------------+---------+-------------+
+|                   Event                  | Counter |  HWThread 0 |
++------------------------------------------+---------+-------------+
+|             INSTR_RETIRED_ANY            |  FIXC0  | 19416972117 |
+|           CPU_CLK_UNHALTED_CORE          |  FIXC1  |  7977760712 |
+|           CPU_CLK_UNHALTED_REF           |  FIXC2  |  4981785346 |
+| FP_ARITH_INST_RETIRED_128B_PACKED_SINGLE |   PMC0  |         476 |
+|    FP_ARITH_INST_RETIRED_SCALAR_SINGLE   |   PMC1  |  3803503530 |
+| FP_ARITH_INST_RETIRED_256B_PACKED_SINGLE |   PMC2  |      304122 |
++------------------------------------------+---------+-------------+
+
++-------------------------+------------+
+|          Metric         | HWThread 0 |
++-------------------------+------------+
+|   Runtime (RDTSC) [s]   |     2.7650 |
+|   Runtime unhalted [s]  |     4.1988 |
+|       Clock [MHz]       |  3042.6332 |
+|           CPI           |     0.4109 |
+|       SP [MFLOP/s]      |  1376.4639 |
+|     AVX SP [MFLOP/s]    |     0.8799 |
+|     Packed [MUOPS/s]    |     0.1102 |
+|     Scalar [MUOPS/s]    |  1375.5833 |
+| Vectorization ratio [%] |     0.0080 |
++-------------------------+------------+
+
