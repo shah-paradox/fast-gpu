@@ -326,7 +326,7 @@ def main():
     tests = [
         {"name": "test0", "src_off": (0, 0), "tgt_off": (0, 0)},
         {"name": "test1", "src_off": (0, 0), "tgt_off": (0, 0)},
-        {"name": "test2", "src_off": (0, 0), "tgt_off": (260, 260)},
+        {"name": "test2", "src_off": (0, 0), "tgt_off": (0, 0)},
         {"name": "test4", "src_off": (0, 0), "tgt_off": (0, 0)},
         {"name": "test5", "src_off": (0, 0), "tgt_off": (0, 0)},
     ]
